@@ -1,62 +1,58 @@
 //1
-const images = document.querySelectorAll('.gallery .image')
+const images = document.querySelectorAll(".image")
 let currentIndex = 0
-function updateImage() {
-  images.forEach((image, index) => {
-    if (index === currentIndex) {
-      image.style.display = "block"
-    } else {
-      image.style.display = "none"
+const showImage = (index) => {
+    images.forEach((img, i) => {
+        if (i === index) {
+            img.style.display = "block"
+        } else {
+            img.style.display = "none"
+        }
+    })
+}
+showImage(currentIndex)
+window.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight" && currentIndex < images.length - 1) {
+        currentIndex++
+    } else if (event.key === "ArrowLeft" && currentIndex > 0) {
+        currentIndex--
     }
-  })
-}
-function nextImage() {
-  currentIndex = (currentIndex + 1) % images.length
-  updateImage()
-}
-function prevImage() {
-  currentIndex = (currentIndex - 1 + images.length) % images.length
-  updateImage()
-}
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'ArrowRight') {
-    nextImage()
-  } else if (event.key === 'ArrowLeft') {
-    prevImage()
-  }
+    showImage(currentIndex)
 })
-updateImage()
-//2
-const inputElement = document.getElementById('input-boxes')
-const renderButton = document.querySelector('[data-action="render"]')
-const destroyButton = document.querySelector('[data-action="destroy"]')
-const boxesContainer = document.getElementById('boxes')
-function getRandomColor() {
-  const r = Math.floor(Math.random() * 256)
-  const g = Math.floor(Math.random() * 256)
-  const b = Math.floor(Math.random() * 256)
-  return `rgb(${r}, ${g}, ${b})`
+// 2
+const controls = document.getElementById("controls")
+const input = controls.querySelector("input")
+const renderButton = controls.querySelector('[data-action="render"]')
+const destroyButton = controls.querySelector('[data-action="destroy"]')
+const boxesContainer = document.getElementById("boxes")
+const getRandomColor = () => {
+  const colorRed = Math.floor(Math.random() * 256)
+  const colorGreen = Math.floor(Math.random() * 256)
+  const colorBlue = Math.floor(Math.random() * 256)
+  return `rgb(${colorRed}, ${colorGreen}, ${colorBlue})`
 }
-function createBoxes(amount) {
-  boxesContainer.innerHTML = ''
-
-  for (let i = 0; i < amount; i++) {
-    const box = document.createElement('div')
-    const size = 30 + i * 10
-    box.style.width = `${size}px`
-    box.style.height = `${size}px`
-    box.style.backgroundColor = getRandomColor()
-    box.classList.add('box')
-    boxesContainer.appendChild(box)
-  }
+const destroyBoxes = () => {
+  boxesContainer.innerHTML = ""
 }
-function destroyBoxes() {
-  boxesContainer.innerHTML = ''
+const makeBoxes = (amount) => {
+    destroyBoxes()
+    let size = 30
+    for (let i = 0; i < amount; i++) {
+        const box = document.createElement("div")
+        box.style.width = `${size}px`
+        box.style.height = `${size}px`
+        box.style.backgroundColor = getRandomColor()
+        boxesContainer.appendChild(box)
+        size += 10
+    }
 }
-renderButton.addEventListener('click', () => {
-  const amount = parseInt(inputElement.value)
-  if (amount > 0) {
-    createBoxes(amount)
-  }
+renderButton.addEventListener("click", () => {
+    const amount = parseInt(input.value)
+    if (amount > 0 && amount <= 100) {
+        makeBoxes(amount)
+    } else {
+        alert("Введіть число від 1 до 100!")
+    }
+    input.value = ""
 })
-destroyButton.addEventListener('click', destroyBoxes)
+destroyButton.addEventListener("click", destroyBoxes)
